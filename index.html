@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challan Tracker | Real-Time Vehicle E-Challan Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">E-Challan<span class="gradient-text">Trace</span></span>
+          <span class="brand-sub">National Traffic Portal Integration</span>
+        </div>
+      </div>
+      <div class="credit-pill">
+        <span class="pulse-dot"></span>
+        <span>Engineered & Created by <strong>Himanshu Kumar</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Search Section -->
+  <main class="main-wrapper container">
+    <section class="hero-section">
+      <div class="badge-tag">⚡ Fast, Live & Direct Vehicle Verification</div>
+      <h1 class="hero-title">Track Traffic Challans <span class="gradient-text">Instantly</span></h1>
+      <p class="hero-desc">
+        Check pending fines, court dispositions, violation records, and payment status directly with your RC registration number.
+      </p>
+
+      <!-- Search Card -->
+      <div class="search-card">
+        <form id="challanForm" class="search-form" onsubmit="event.preventDefault(); fetchChallan();">
+          <div class="input-group">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+            </span>
+            <input 
+              type="text" 
+              id="vehicleInput" 
+              placeholder="e.g. BR06BY8603 or DL01AB1234" 
+              value="BR06BY8603" 
+              autocomplete="off" 
+              spellcheck="false"
+              required
+            />
+            <button type="submit" id="searchBtn" class="btn-primary">
+              <span>Track Challan</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-icon">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <div class="quick-tags">
+            <span class="quick-label">Try sample:</span>
+            <button type="button" class="tag" onclick="quickFill('BR06BY8603')">BR06BY8603</button>
+            <button type="button" class="tag" onclick="quickFill('MH02CW4512')">MH02CW4512</button>
+            <button type="button" class="tag" onclick="quickFill('UP32MN9901')">UP32MN9901</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Running Little Bike Loader Section -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="bike-animation-card">
+        <div class="bike-track">
+          <!-- Road and dashes -->
+          <div class="road-surface">
+            <div class="road-line"></div>
+          </div>
+
+          <!-- Little Running Bike SVG -->
+          <div class="bike-runner">
+            <svg class="bike-svg" viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Rider Body -->
+              <circle cx="68" cy="18" r="7" fill="#6366f1" class="rider-head"/>
+              <!-- Helmet Visor -->
+              <path d="M72 17H76C76 17 76 21 72 21" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+              <!-- Rider Torso -->
+              <path d="M68 25L58 40L45 42" stroke="#4f46e5" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Rider Arm & Handlebar grip -->
+              <path d="M64 30L78 33L84 37" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- Rider Leg & Pedals -->
+              <path d="M56 41L62 50L53 52" stroke="#3730a3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="rider-leg"/>
+              
+              <!-- Bike Frame -->
+              <path d="M30 52L50 52L72 37L85 37" stroke="#06b6d4" stroke-width="3" stroke-linecap="round"/>
+              <path d="M50 52L65 37L52 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/>
+              <path d="M65 37L85 52" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+              <path d="M30 52L52 35" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Front & Rear Wheels with rotating spokes -->
+              <g class="wheel rear-wheel">
+                <circle cx="30" cy="52" r="14" stroke="#e2e8f0" stroke-width="3" fill="#0f172a"/>
+                <circle cx="30" cy="52" r="4" fill="#38bdf8"/>
+                <line x1="30" y1="38" x2="30" y2="66" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="16" y1="52" x2="44" y2="52" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="20" y1="42" x2="40" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="20" y1="62" x2="40" y2="42" stroke="#94a3b8" stroke-width="1.5"/>
+              </g>
+
+              <g class="wheel front-wheel">
+                <circle cx="85" cy="52" r="14" stroke="#e2e8f0" stroke-width="3" fill="#0f172a"/>
+                <circle cx="85" cy="52" r="4" fill="#38bdf8"/>
+                <line x1="85" y1="38" x2="85" y2="66" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="71" y1="52" x2="99" y2="52" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="75" y1="42" x2="95" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="75" y1="62" x2="95" y2="42" stroke="#94a3b8" stroke-width="1.5"/>
+              </g>
+
+              <!-- Exhaust speed smoke puffs -->
+              <circle cx="14" cy="53" r="2.5" fill="#64748b" class="exhaust-smoke puff-1"/>
+              <circle cx="6" cy="51" r="3.5" fill="#475569" class="exhaust-smoke puff-2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="loader-status">
+          <h3 id="loaderStatusHeading">Vroom! Speeding to RTO Servers...</h3>
+          <p id="loaderStatusDetail">Verifying registration plate <span id="loadingVehicleNumber" class="plate-highlight">BR06BY8603</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Display Section -->
+    <div id="resultsContainer" class="results-container" style="display: none;">
+      <!-- Populated via script.js -->
+    </div>
+
+    <!-- Error / Notice Banner -->
+    <div id="noticeBanner" class="notice-banner" style="display: none;"></div>
+
+    <!-- Features / Trust Highlights -->
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Official Direct Sync</h3>
+        <p>Configured with your high-speed API to query live transport database gateways seamlessly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Real-Time Dispositions</h3>
+        <p>Get instant breakdown of challan numbers, court transfer records, dates, and penalty amounts.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <h3>Payment Verification</h3>
+        <p>Distinguish cleanly between Pending, Disposed, and Paid violations with one-click receipts.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full Credit Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-credit-box">
+        <div class="creator-badge">Project Creator & Architect</div>
+        <h2 class="creator-name">Crafted with full credit to <span class="highlight-name">Himanshu Kumar</span></h2>
+        <p class="creator-tagline">
+          Designed with high precision, bespoke motorcycle telemetry animations, and real-time Parivahan API integration.
+        </p>
+        <div class="copyright-bar">
+          © <span id="currentYear"></span> Challan Tracker. All Rights Reserved. Created by <strong>Himanshu Kumar</strong>.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
